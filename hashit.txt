@@ -1,3 +1,15 @@
+原题链接: 
+http://www.spoj.com/problems/HASHIT/
+
+题目描述:
+创建一个hash表，Open addressing解决冲突，
+支持add_key和del_key两个操作，
+hash函数以及probe squence算法，题中给出
+一系列添加删除动作之后，打印出hash表中的所有的KEY
+
+
+原题:
+====================================================================================
 Your task is to calculate the result of the hashing process in a table of 101 elements, containing keys that are strings of length at most 15 letters (ASCII codes 'A',...,'z'). Implement the following operations:
 
 find the index of the element defined by the key (ignore, if no such element),
