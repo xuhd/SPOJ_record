@@ -2,20 +2,22 @@
 
 int main()
 {
-  int t, i, a;
+  int t, i, k, a;
   char exp[1024];
   char op;
   char *p, *pa, *pb;
   int la, lb, len;
-  char line[2048];
-  int top, carry, borrow;
+  char dash[2048], queue_a[2048], queue_b[2048], result[2048];
+  int rear_d, rear_a, rear_b, top;
+  int carry, borrow;
+  int check_offset;
 
   scanf("%d", &t);
 
   if( t<=0 || t>1000 )
     return -1;
 
-  for(i = 0; i < t; i++) {
+  for(k = 0; k < t; k++) {
     scanf("%s", exp);
     la = lb = 0;
     pa = p = exp;
@@ -42,47 +44,95 @@ int main()
       borrow = 0;
       while(la&&lb) {
 	a = (*(pa+la---1)-'0') - borrow - (*(pb+lb---1)-'0');
-	borrow = a<1?1:0;
-   	line[++top] = '0'+a+10*borrow;
+	borrow = a<0?1:0;
+   	result[++top] = '0'+a+10*borrow;
       }
-      while(la){line[++top] = *(pa+la---1)-borrow; borrow=0;}
-      while(top>=0)putchar(line[top--]);
+      while(la){
+	a = (*(pa+la---1)-'0') - borrow;
+	borrow = a<0?1:0;
+	result[++top] = '0'+a+10*borrow;
+      }
+      i = 0;
+      while('0'==result[top+i]){result[top+i--]=' ';} //replace leading zero with spaces
+      while(top>=0)putchar(result[top--]);
       putchar('\n');
 
       break;
 
     case '+':
       len = la>lb+1?la:lb+1;
-      for(i=0; i<len-la; i++)
-	putchar(' ');
-      printf("%s\n", pa);
-      for(i=0; i<len-lb-1; i++)
-	putchar(' ');
-      putchar('+');
-      printf("%s\n", pb);
-      for(i=0; i<len; i++)
-	putchar('-');
-      putchar('\n');
+      if(lb<la)check_offset=1;
+      else check_offset=0;
+      //======== for first number =========
+      rear_a = 0;
+      queue_a[rear_a++] = ' '; //first entry is reserved for possibly one additional space' '
+      for(i=0; i<len-la; i++) {
+	//putchar(' ');
+	queue_a[rear_a++] = ' ';
+      }
+      //printf("%s\n", pa);
+      i = 0;
+      while(*(pa+i)) queue_a[rear_a++] = *(pa+i++);
+      queue_a[rear_a++] = '\n';
+      queue_a[rear_a] = '\0'; //end of first number
+
+
+      //======== for second number =========
+      rear_b = 0;
+      queue_b[rear_b++] = ' '; //first entry is reserved for possibly one additional space' '
+      for(i=0; i<len-lb-1; i++) {
+	//putchar(' ');
+	queue_b[rear_b++] = ' ';
+      }
+      //putchar('+');
+      queue_b[rear_b++] = '+';
+      //printf("%s\n", pb);
+      i = 0;
+      while(*(pb+i)) queue_b[rear_b++] = *(pb+i++);
+      queue_b[rear_b++] = '\n';
+      queue_b[rear_b] = '\0'; //end of second number
+
+      //======== for dash line ============
+      rear_d = 0;
+      for(i=0; i<=len; i++) {
+	//putchar('-');
+	dash[rear_d++] = '-';
+      }
+      //putchar('\n');
+      dash[rear_d++] = '\n';
+      dash[rear_d] = '\0';
+
+      //======== for the result =========
       top = -1;
       carry = 0;
       while(la&&lb) {
 	a = (*(pa+la---1)-'0') + (*(pb+lb---1)-'0') + carry;
 	carry = a>9?1:0;
-   	line[++top] = '0'+a-10*carry;
+   	result[++top] = '0'+a-10*carry;
       }
       while(la){
 	a = *(pa+la---1) - '0' + carry;
 	carry = a>9?1:0;
-	line[++top] = '0'+a-10*carry;
+	result[++top] = '0'+a-10*carry;
       }
       while(lb){
-	a = *(pa+lb---1) - '0' + carry;
+	a = *(pb+lb---1) - '0' + carry;
 	carry = a>9?1:0;
-	line[++top] = '0'+a-10*carry;
+	result[++top] = '0'+a-10*carry;
       }
-      if(carry)line[++top] = '1';
-      while(top<len-1)line[++top] = ' ';
-      while(top>=0)putchar(line[top--]);
+      if(carry)result[++top] = '1';
+      while(top<len-1)result[++top] = ' ';
+
+      if(check_offset && carry){
+        printf("%s", queue_a);
+        printf("%s", queue_b);
+        printf("%s", dash);
+      }else{
+        printf("%s", queue_a+1);
+        printf("%s", queue_b+1);
+        printf("%s", dash+1);
+      }
+      while(top>=0)putchar(result[top--]);
       putchar('\n');
       break;
 
