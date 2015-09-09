@@ -1,3 +1,8 @@
+/*
+ * author: xuhd
+ * problem link: http://www.spoj.com/problems/ARITH/
+ */
+
 #include <stdio.h>
 
 int main()

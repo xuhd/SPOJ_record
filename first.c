@@ -1,3 +1,8 @@
+/*
+ * author: xuhd
+ * problem link: http://www.spoj.com/problems/TEST/
+ */
+
 #include <stdio.h>
 
 int main()

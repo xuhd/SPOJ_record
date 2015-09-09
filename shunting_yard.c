@@ -1,3 +1,8 @@
+/*
+ * author: xuhd
+ * problem link: http://www.spoj.com/problems/ONP/
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>

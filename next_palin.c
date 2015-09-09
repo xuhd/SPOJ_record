@@ -1,3 +1,8 @@
+/*
+ * author: xuhd
+ * problem link: http://www.spoj.com/problems/PALIN/
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

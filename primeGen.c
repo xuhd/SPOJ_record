@@ -1,3 +1,8 @@
+/*
+ * author: xuhd
+ * problem link: http://www.spoj.com/problems/PRIME1/
+ */
+
 #include <stdio.h>
 #include <math.h>
 

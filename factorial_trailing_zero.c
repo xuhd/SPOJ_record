@@ -1,3 +1,8 @@
+/*
+ * author: xuhd
+ * problem link: http://www.spoj.com/problems/FCTRL/
+ */
+
 #include <stdio.h>
 
 unsigned fctrl_tz(unsigned n)

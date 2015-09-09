@@ -1,3 +1,8 @@
+/*
+ * author: xuhd
+ * problem link: http://www.spoj.com/problems/HASHIT/
+ */
+
 #include <stdio.h>
 #include <string.h>
 
