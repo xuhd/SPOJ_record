@@ -142,7 +142,66 @@ int main()
       break;
 
     case '*':
-      break;
+      //len = la>lb+1?la:lb+1;
+      len = la+lb-1;
+      
+      //======== for first number =========
+      rear_a = 0;
+      queue_a[rear_a++] = ' '; //first entry is reserved for possibly one additional space' '
+      for(i=0; i<len-la; i++) {
+	//putchar(' ');
+	queue_a[rear_a++] = ' ';
+      }
+      //printf("%s\n", pa);
+      i = 0;
+      while(*(pa+i)) queue_a[rear_a++] = *(pa+i++);
+      queue_a[rear_a++] = '\n';
+      queue_a[rear_a] = '\0'; //end of first number
+
+
+      //======== for second number =========
+      rear_b = 0;
+      queue_b[rear_b++] = ' '; //first entry is reserved for possibly one additional space' '
+      for(i=0; i<len-lb-1; i++) {
+	//putchar(' ');
+	queue_b[rear_b++] = ' ';
+      }
+      //putchar('+');
+      queue_b[rear_b++] = '+';
+      //printf("%s\n", pb);
+      i = 0;
+      while(*(pb+i)) queue_b[rear_b++] = *(pb+i++);
+      queue_b[rear_b++] = '\n';
+      queue_b[rear_b] = '\0'; //end of second number
+
+      //======== for first dash line ============
+      rear_d = 0;
+      for(i=0; i<=len; i++) {
+	//putchar('-');
+	dash[rear_d++] = '-';
+      }
+      //putchar('\n');
+      dash[rear_d++] = '\n';
+      dash[rear_d] = '\0';
+
+      //====== for middle result, or the final result if 1 == la =====
+      for(i = 0; i < la; i++) {
+	;
+      }
+
+      if(la > 1) {
+	//======== for the second dash line
+        //======== for the final result  ==========
+        for(i = 0; i < len; i++)
+	  result[i] = '?';
+	result[++i] = '\0';
+
+	printf("%s", queue_a);
+	printf("%s", queue_b);
+	printf("%s", dash);
+
+	printf("%s\n", result);
+      }
     }
   }
 
