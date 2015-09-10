@@ -4,6 +4,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 
 int main()
 {
@@ -11,7 +12,7 @@ int main()
   char exp[1024];
   char op;
   char *p, *pa, *pb;
-  int la, lb, len, prodlen;
+  int la, lb, len, prodlen, tmplen;
   char spaces[512];
   char dash[2048], queue_a[2048], queue_b[2048], result[2048];
   char mid_result[512][512];
@@ -44,15 +45,23 @@ int main()
 	putchar(' ');
       putchar('-');
       printf("%s\n", pb);
-      for(i=0; i<len; i++)
-	putchar('-');
-      putchar('\n');
+      tmplen = lb+1;
+      c = 0;
+      for(i=0; i<len; i++) {
+	 dash[i] = '-';
+	 c++;
+      	}
+      dash[i++]='\n';
+      dash[i] = '\0';
+
       top = -1;
       borrow = 0;
+      m = 0;
       while(la&&lb) {
 	a = (*(pa+la---1)-'0') - borrow - (*(pb+lb---1)-'0');
 	borrow = a<0?1:0;
    	result[++top] = '0'+a+10*borrow;
+	m++;
       }
       
       if(0==la&&0==lb)result[++top] = ' ';
@@ -61,12 +70,27 @@ int main()
 	a = (*(pa+la---1)-'0') - borrow;
 	borrow = a<0?1:0;
 	result[++top] = '0'+a+10*borrow;
+	m++;
       }
-      
+
       i = 0;
       while('0'==result[top+i]||' '==result[top+i]) {
 	result[top+i--]=' '; //replace leading zero with spaces
+	m--;
       }
+
+      //for(i=0;i+m<len;i++)putchar(' ');
+      //while(c++<m)putchar('-');
+
+      m = m>tmplen?m:tmplen;
+      i = 0;
+      while(m+i++ < len)putchar(' ');
+      for(i = 0; i<m; i++)putchar('-');
+      putchar('\n');
+
+      //if(top>tmplen&&tmplen<len) dash[0] = ' ';
+      //printf("%s", dash);
+
       while(top>=0)putchar(result[top--]);
       putchar('\n');
 
@@ -150,8 +174,8 @@ int main()
       break;
 
     case '*':
+#if 0      
       len = la>lb+1?la:lb+1;
-      
       //======== for first number =========
       rear_a = 0;
       for(i=0; i<len-la; i++) {
@@ -178,48 +202,93 @@ int main()
       while(*(pb+i)) queue_b[rear_b++] = *(pb+i++);
       queue_b[rear_b++] = '\n';
       queue_b[rear_b] = '\0'; //end of second number
-
-      //======== for first dash line ============
-      rear_d = 0;
-      for(i=0; i< len; i++) {
-	//putchar('-');
-	dash[rear_d++] = '-';
-      }
-      //putchar('\n');
-      dash[rear_d++] = '\n';
-      dash[rear_d] = '\0';
-
+#endif
 
       //====== for middle result, or the final result if 1 == la =====
-      top = -1;
+//-------determine how many digits in product----------
+memset(mid_result , 0, sizeof(mid_result));
+      tmplen = la+lb;
+      for(i = 0; i < lb; i++) {
+	top = -1;
+	for(j = 0; j < i; j++)
+	  result[++top] = '\0'; //to align the partial product with the right digit
+	carry = 0;
+	m = *(pb+lb-1-i) - '0';
+	if(m>0){
+	  for( j = la-1; j >= 0; j-- ) {
+	    c = *(pa+j) - '0';
+	    result[++top] = '0' + (c*m+carry)%10;
+	    carry = (c*m+carry)/10;
+	  }
+	  if(carry>0)result[++top] = '0' + carry;
+	}else{
+	  result[++top] = '0';
+	}
 
-      m = *pb - '0';
-      carry = 0;
-      for(j = la-1; j >= 0; j--){
-	c = *(pa+j) - '0';
-	carry = (c*m+carry)/10;
-      }
-      if(carry>0)prodlen = la+lb; //determine how many digits in product
-      else prodlen = la+lb-1;
+	while(top < tmplen-1)result[++top] = ' ';
 
-      if( prodlen > len) {
-	i = 0;
-	len = prodlen;
-	while(rear_d-1+i < len)spaces[i++] = ' ';
-	spaces[++i] = '\0';
-	printf("%s%s", spaces, queue_a);
-	printf("%s%s", spaces, queue_b);
-	printf("%s%s", spaces, dash);
-      }else{
-	printf("%s", queue_a);
-	printf("%s", queue_b);
-	printf("%s", dash);	
+	j = 0;	
+	while(top>=0){
+	  p = result + top--;
+	  //if(*p)putchar(*p);
+	  if(' ' == *p) *p = '\0'; //replace ' ' with '\0', prepare for adding
+	  mid_result[i][j++] = *p;
+	}
+
+	//putchar('\n');
       }
+
+//printf("@@@@@@@@@@@@@@@@@@@\n");
+carry = 0;
+top = -1;
+for(i = 0; i < tmplen; i++){
+  a = 0;
+  for(j = 0; j<=i && j<lb; j++){
+    m = mid_result[j][tmplen-1-i];
+    if(m)m-='0';
+    a += m;
+  }
+  result[++top] = (a+carry)%10 + '0';
+  //putchar(result[top]);
+  carry = (a+carry)/10;	  
+}
+//printf("\n\n%c\n", result[top]);
+
+if('0' == result[top])
+  len = tmplen-1;
+else
+  len = tmplen;
+//printf("\n@@@@@@@@@@@@@@@@@@@\n");
+
+prodlen = len;
+len = len>lb+1?len:lb+1;
+
+//-----------------------------------------------------
+
+i = 0;
+while(la+i++<len)putchar(' ');
+printf("%s\n", pa);
+
+i = 0;
+while(lb+1+i++<len)putchar(' ');
+putchar('*');
+printf("%s\n", pb);
+
+//======== for first dash line ============
+rear_d = 0;
+for(i=0; i<lb+1; i++) {
+  dash[rear_d++] = '-';
+}
+dash[rear_d++] = '\n';
+dash[rear_d] = '\0';
+
+//return 0;
+
       
       for(i = 0; i < lb; i++) {
 	top = -1;
 	for(j = 0; j < i; j++)
-	  result[++top] = ' '; //to align the partial product with the right digit
+	  result[++top] = '\0'; //to align the partial product with the right digit
 	carry = 0;
 	m = *(pb+lb-1-i) - '0';
 	if(m>0){
@@ -235,21 +304,42 @@ int main()
 
 	while(top < len-1)result[++top] = ' ';
 
-	j = 0;
+
+	if(0==i) {
+
+	  j = top;
+	  c = 0;
+	  while(j>=0) {
+	    p = result + j--;
+	    if(isdigit(*p))c++;
+	  }
+
+	  j = 0;
+	  while(rear_d-1+j < len)spaces[j++] = ' ';
+	  spaces[j--] = '\0';
+	  while(c-->rear_d-1) {
+	    if(j>=0&&' '==spaces[j])spaces[j--] = '-';
+	  }
+
+	  printf("%s%s", spaces, dash);
+	}
+
+	j = 0;	
 	while(top>=0){
 	  p = result + top--;
-	  putchar(*p);
+	  if(*p)putchar(*p);
 	  if(' ' == *p) *p = '\0'; //replace ' ' with '\0', prepare for adding
 	  mid_result[i][j++] = *p;
 	}
+
 	putchar('\n');
       }
 
       //===== if the multiplier has more than one digit =====
       if(lb > 1) {
+       i=0;
+       while(prodlen+i++<len) putchar(' ');
 	//======== for the second dash line
-	for(i = 0; i < len-prodlen; i++)
-	  putchar(' ');
 	for(i = 0; i < prodlen; i++)
 	  putchar('-');
 	putchar('\n');
@@ -258,7 +348,7 @@ int main()
 	carry = 0;
         for(i = 0; i < len; i++){
 	  a = 0;
-	  for(j = 0; j <= i; j++){
+	  for(j = 0; j<=i && j<lb; j++){
 	    m = mid_result[j][len-1-i];
 	    if(m)m-='0';
 	    a += m;
