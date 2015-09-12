@@ -1,8 +1,3 @@
-/*
- * author: xuhd
- * problem link: http://www.spoj.com/problems/NHAY/
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
